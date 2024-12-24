@@ -1,3 +1,4 @@
+// internal/planet/planet_code_test.go
 package planet
 
 import (
@@ -10,19 +11,9 @@ func TestCorrectAnswerInTime(t *testing.T) {
 	task := NewSaveThePlanet("Test Task", 5*time.Second) // 5 seconds to complete
 
 	// Simulate completing the task correctly within the deadline
-	go func() {
-		time.Sleep(1 * time.Second) // Simulate user typing time
-		if sp, ok := task.(*SaveThePlanet); ok {
-			sp.TaskStatus = true // Simulate task completion
-		}
-	}()
-
-	time.Sleep(2 * time.Second) // Wait to ensure simulation completes
-
-	if sp, ok := task.(*SaveThePlanet); ok {
-		if !sp.TaskStatus {
-			t.Fatalf("Expected task '%s' to be completed successfully, but it failed", sp.TaskName)
-		}
+	err := task.CompleteTask("tenalp_eht_evas") // Directly provide the correct answer
+	if err != nil {
+		t.Fatalf("Expected task '%s' to be completed successfully, but it failed: %s", task.(*SaveThePlanet).TaskName, err)
 	}
 }
 
@@ -31,12 +22,9 @@ func TestWrongAnswer(t *testing.T) {
 	task := NewSaveThePlanet("Test Task", 5*time.Second)
 
 	// Simulate the wrong answer
-	if sp, ok := task.(*SaveThePlanet); ok {
-		sp.TaskStatus = false
-		// Validate that the task fails
-		if sp.TaskStatus {
-			t.Fatalf("Expected task '%s' to fail with wrong answer, but it succeeded", sp.TaskName)
-		}
+	err := task.CompleteTask("wrong_answer") // Provide an incorrect answer
+	if err == nil {
+		t.Fatalf("Expected task '%s' to fail with wrong answer, but it succeeded", task.(*SaveThePlanet).TaskName)
 	}
 }
 
@@ -45,17 +33,10 @@ func TestTimeout(t *testing.T) {
 	task := NewSaveThePlanet("Test Task", 1*time.Second) // Very short deadline
 
 	// Simulate user response coming after the deadline
-	go func() {
-		time.Sleep(2 * time.Second) // Delay beyond the deadline
-		task.CompleteTask()         // Attempt to complete the task
-	}()
-
-	time.Sleep(3 * time.Second) // Wait to ensure timeout has occurred
-
-	if sp, ok := task.(*SaveThePlanet); ok {
-		if sp.TaskStatus {
-			t.Fatalf("Expected task '%s' to fail due to timeout, but it succeeded", sp.TaskName)
-		}
+	time.Sleep(2 * time.Second)                 // Delay beyond the deadline
+	err := task.CompleteTask("tenalp_eht_evas") // Attempt to complete the task
+	if err == nil {
+		t.Fatalf("Expected task '%s' to fail due to timeout, but it succeeded", task.(*SaveThePlanet).TaskName)
 	}
 }
 
@@ -64,16 +45,10 @@ func TestEdgeCase(t *testing.T) {
 	task := NewSaveThePlanet("Test Task", 2*time.Second) // Tight deadline
 
 	// Simulate user response coming immediately after the deadline
-	go func() {
-		time.Sleep(3 * time.Second) // Respond after deadline
-		task.CompleteTask()         // Simulate task completion
-	}()
+	time.Sleep(6 * time.Second)                 // Respond after deadline
+	err := task.CompleteTask("tenalp_eht_evas") // Simulate task completion
 
-	time.Sleep(4 * time.Second) // Wait to ensure simulation completes
-
-	if sp, ok := task.(*SaveThePlanet); ok {
-		if sp.TaskStatus {
-			t.Fatalf("Expected task '%s' to fail as it was completed after the deadline, but it succeeded", sp.TaskName)
-		}
+	if err == nil {
+		t.Fatalf("Expected task '%s' to fail as it was completed after the deadline, but it succeeded", task.(*SaveThePlanet).TaskName)
 	}
 }

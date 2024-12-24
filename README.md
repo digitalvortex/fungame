@@ -38,6 +38,16 @@ To run the game, execute the following command in your terminal:
 go run cmd/main.go
 ```
 
+### User Input
+
+During the game, you will be prompted to complete a coding challenge. The challenge will ask you to reverse a specific string. You will need to type the exact reversed string as your answer. For example:
+
+- **Challenge**: Write a function in Go to reverse the string `'save_the_planet'` and return it.
+- **Example Input**: `save_the_planet`
+- **Expected Output**: `tenalp_eht_evas`
+
+Make sure to provide your answer within the specified time limit to successfully complete the task.
+
 ### Running Tests
 
 To ensure everything is working correctly, you can run the tests included in the project. Use the following command:
