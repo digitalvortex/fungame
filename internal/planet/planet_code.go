@@ -47,12 +47,6 @@ func (s *SaveThePlanet) CompleteTask(input string) error {
 	fmt.Println("Expected output: 'tenalp_eht_evas'")
 	fmt.Println("Quick! Write the function, compile it, and provide the output:")
 
-	// debug
-	fmt.Println("start ->", start)
-	fmt.Println("deadline ->", s.Deadline)
-	fmt.Println("duration ->", s.Duration)
-	fmt.Println("Time since start ->", time.Since(start))
-
 	// Check if the task was completed within the deadline
 	if time.Since(start) > s.Duration {
 		return fmt.Errorf("🤦 You took too long! The planet goes BOOM 💥")

@@ -30,7 +30,7 @@ func main() {
 
 		// Capture user input
 		var input string
-		done := make(chan bool)
+		done := make(chan bool, 5)
 
 		// Start a goroutine to capture user input
 		go func() {
